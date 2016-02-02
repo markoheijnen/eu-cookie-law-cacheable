@@ -22,4 +22,3 @@ function ecl_register_mce_button( $buttons ) {
 	array_push( $buttons, 'my_mce_button' );
 	return $buttons;
 }
-?>

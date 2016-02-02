@@ -51,6 +51,10 @@ function peadig_eucookie_options() {
 			<?php
 				ecl_check_defaults();
 				$options = get_option('peadig_eucookie');
+
+				if ( ! isset( $options['boxlinkid'] ) ) {
+					$options['boxlinkid'] = '';
+				}
 			?>
 			<table class="form-table">
 				<tr valign="top"><th scope="row"><label for="enabled"><?php _e('Activate'); ?></label></th>
@@ -222,3 +226,4 @@ function peadig_eucookie_options() {
 	</div>
 <?php
 }
+?>

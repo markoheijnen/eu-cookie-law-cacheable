@@ -45,6 +45,8 @@ class EU_Cookie_Law_Cacheable {
 		}
 		else {
 			require_once 'class-frontend.php';
+			new EU_Cookie_Law_Cacheable_Frontend();
+			new EU_Cookie_Law_Cacheable_Frontend_Block();
 		}
 	} 
 

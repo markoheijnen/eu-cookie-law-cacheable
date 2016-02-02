@@ -61,14 +61,16 @@ jQuery(document).ready(function($){
 	}
 
 	function showembeds() {
-		var embed_frame = $('.eu-cookie-law-embed .eu-embed');
-		var embed = embed_frame.find('>:first-child');
-
-		embed_frame.show()
-		embed.attr('src', embed.data('src') );
-		embed.removeAttr('data-src');
-
 		$('.eu-cookie-law-embed .eucookie').hide();
+
+		$('.eu-cookie-law-embed').each(function () {
+			var embed_frame = $('.eu-embed', this);
+			var embed = embed_frame.find('>:first-child');
+
+			embed_frame.show()
+			embed.attr('src', embed.data('src') );
+			embed.removeAttr('data-src');
+		});
 	}
 
 });

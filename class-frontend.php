@@ -16,7 +16,7 @@ function eucookie_scripts() {
 	global $euCookieSet;
 	global $deleteCookieUrlCheck;
 	
-	if ( !isset($_GET['nocookie']) && wp_get_referer() && eucookie_option('navigationconsent') && (!cookie_accepted()) && (eucookie_option('boxlinkid') != get_the_ID()) ) {
+	if ( !isset($_GET['nocookie']) && wp_get_referer() && EU_Cookie_Law_Cacheable::get_option('navigationconsent') && (!cookie_accepted()) && (EU_Cookie_Law_Cacheable::get_option('boxlinkid') != get_the_ID()) ) {
 		$euCookieSet = 1;
 	}
 	
@@ -30,12 +30,12 @@ function eucookie_scripts() {
 	
 	$eclData = array(
 		'euCookieSet' => $euCookieSet,
-		'autoBlock' =>  eucookie_option('autoblock'),
+		'autoBlock' =>  EU_Cookie_Law_Cacheable::get_option('autoblock'),
 		'expireTimer' => get_expire_timer(),
-		'scrollConsent' => eucookie_option('scrollconsent'),
+		'scrollConsent' => EU_Cookie_Law_Cacheable::get_option('scrollconsent'),
 		'networkShareURL' => ecl_get_cookie_domain(),
-		'isCookiePage' => eucookie_option('boxlinkid') == get_the_ID(),
-		'isRefererWebsite' => eucookie_option('navigationconsent') && wp_get_referer(),
+		'isCookiePage' => EU_Cookie_Law_Cacheable::get_option('boxlinkid') == get_the_ID(),
+		'isRefererWebsite' => EU_Cookie_Law_Cacheable::get_option('navigationconsent') && wp_get_referer(),
 		'deleteCookieUrl' => esc_url( add_query_arg( 'nocookie', '1', get_permalink() ) )
 	);
 	
@@ -85,8 +85,8 @@ function ecl_isSearchEngine(){
 
 function ecl_get_cookie_domain() {
 	
-	if ( eucookie_option('networkshare') ) {
-		return 'domain='.eucookie_option('networkshareurl').'; ';
+	if ( EU_Cookie_Law_Cacheable::get_option('networkshare') ) {
+		return 'domain='.EU_Cookie_Law_Cacheable::get_option('networkshareurl').'; ';
 	}
 	return '';
 }
@@ -94,7 +94,7 @@ function ecl_get_cookie_domain() {
 function cookie_accepted() {
 	global $euCookieSet;
 	
-	if ( ! eucookie_option('enabled') ) { return true; }
+	if ( ! EU_Cookie_Law_Cacheable::get_option('enabled') ) { return true; }
 	
 	if ( ( isset( $_COOKIE['euCookie'] ) && !isset( $_GET['nocookie'] ) ) || $euCookieSet ) {
 		return true;
@@ -104,49 +104,44 @@ function cookie_accepted() {
 }
 
 function get_expire_timer() {
-	
-	switch( eucookie_option('length') ){
-		case "hours":
-			$multi = 1;
-			break;
-		case "days":
-			$multi = 1;
-			break;
+	switch( EU_Cookie_Law_Cacheable::get_option('length') ){
 		case "weeks":
 			$multi = 7;
 			break;
 		case "months":
 			$multi = 30;
 			break;
+		default: // Days
+			$multi = 1;
+			break;
 	}
-	return $multi *  eucookie_option('lengthnum');
+	return $multi * EU_Cookie_Law_Cacheable::get_option('lengthnum');
 }
 	
 function peadig_eucookie_bar() {
-	
 	if ( cookie_accepted()  ) {
 		return;
 	}
 	
 	$target = '';
-	if ( eucookie_option('boxlinkid') == 'C') {
-		$link =  eucookie_option('customurl');
-		if ( eucookie_option('boxlinkblank') ) { $target = 'target="_blank" '; }
-	} else if ( eucookie_option('boxlinkid') ) {
-		$link = get_permalink( apply_filters( 'wpml_object_id', eucookie_option('boxlinkid'), 'page' ) );
-		if ( eucookie_option('boxlinkblank') ) { $target = 'target="_blank" '; }
+	if ( EU_Cookie_Law_Cacheable::get_option('boxlinkid') == 'C') {
+		$link =  EU_Cookie_Law_Cacheable::get_option('customurl');
+		if ( EU_Cookie_Law_Cacheable::get_option('boxlinkblank') ) { $target = 'target="_blank" '; }
+	} else if ( EU_Cookie_Law_Cacheable::get_option('boxlinkid') ) {
+		$link = get_permalink( apply_filters( 'wpml_object_id', EU_Cookie_Law_Cacheable::get_option('boxlinkid'), 'page' ) );
+		if ( EU_Cookie_Law_Cacheable::get_option('boxlinkblank') ) { $target = 'target="_blank" '; }
 	} else {
 		$link = '#';
 	}
 ?>
 		<!-- Eu Cookie Law <?php echo get_option( 'ecl_version_number' ); ?> -->
 		<div
-			class="pea_cook_wrapper pea_cook_<?php echo eucookie_option('position'); ?>"
+			class="pea_cook_wrapper pea_cook_<?php echo EU_Cookie_Law_Cacheable::get_option('position'); ?>"
 			style="
 				color:<?php echo ecl_frontstyle('fontcolor'); ?>;
 				background-color: rgba(<?php echo ecl_frontstyle('backgroundcolor'); ?>,0.85);
 			">
-			<p><?php echo eucookie_option('barmessage'); ?> <a style="color:<?php echo eucookie_option('fontcolor'); ?>;" href="<?php echo $link; ?>" <?php echo $target; ?>id="fom"><?php echo eucookie_option('barlink'); ?></a> <button id="pea_cook_btn" class="pea_cook_btn" href="#"><?php echo eucookie_option('barbutton'); ?></button></p>
+			<p><?php echo EU_Cookie_Law_Cacheable::get_option('barmessage'); ?> <a style="color:<?php echo EU_Cookie_Law_Cacheable::get_option('fontcolor'); ?>;" href="<?php echo $link; ?>" <?php echo $target; ?>id="fom"><?php echo EU_Cookie_Law_Cacheable::get_option('barlink'); ?></a> <button id="pea_cook_btn" class="pea_cook_btn" href="#"><?php echo EU_Cookie_Law_Cacheable::get_option('barbutton'); ?></button></p>
 		</div>
 		<div class="pea_cook_more_info_popover">
 			<div
@@ -155,8 +150,8 @@ function peadig_eucookie_bar() {
 					color:<?php echo ecl_frontstyle('fontcolor'); ?>;
 					background-color: rgba(<?php echo ecl_frontstyle('backgroundcolor'); ?>,0.9);
 					">
-			 <p><?php echo eucookie_option('boxcontent'); ?></p>
-				<p><a style="color:<?php echo eucookie_option('fontcolor'); ?>;" href="#" id="pea_close"><?php echo eucookie_option('closelink'); ?></a></p>
+			 <p><?php echo EU_Cookie_Law_Cacheable::get_option('boxcontent'); ?></p>
+				<p><a style="color:<?php echo EU_Cookie_Law_Cacheable::get_option('fontcolor'); ?>;" href="#" id="pea_close"><?php echo EU_Cookie_Law_Cacheable::get_option('closelink'); ?></a></p>
 			</div>
 		</div>
 <?php
@@ -168,14 +163,14 @@ function generate_cookie_notice_text($height, $width, $text) {
 }
 
 function generate_cookie_notice($height, $width) {
-	return generate_cookie_notice_text($height, $width, eucookie_option('bhtmlcontent') );
+	return generate_cookie_notice_text($height, $width, EU_Cookie_Law_Cacheable::get_option('bhtmlcontent') );
 }
 function eu_cookie_shortcode( $atts, $content = null ) {
 	extract(shortcode_atts(
 		array(
 			'height' => '',
 			'width' => '',
-			'text' => eucookie_option('bhtmlcontent')
+			'text' => EU_Cookie_Law_Cacheable::get_option('bhtmlcontent')
 		),
 		$atts)
 	);
@@ -201,7 +196,7 @@ add_action('wp_head', 'ecl_buffer_start');
 add_action('wp_footer', 'ecl_buffer_end'); 
 
 function ecl_erase($content) {
-	if ( !cookie_accepted() && eucookie_option('autoblock') &&
+	if ( !cookie_accepted() && EU_Cookie_Law_Cacheable::get_option('autoblock') &&
 		!(get_post_field( 'eucookielaw_exclude', get_the_id() ) )
 	   ) {
 		
@@ -247,27 +242,27 @@ function ecl_hex2rgb($hex) {
 function ecl_frontstyle($name) {
 	switch ($name) {
 	case 'fontcolor':
-		return  eucookie_option('fontcolor');
+		return EU_Cookie_Law_Cacheable::get_option('fontcolor');
 		break;
 	case 'backgroundcolor':
-		$backgroundcolors = ecl_hex2rgb( eucookie_option('backgroundcolor') );
+		$backgroundcolors = ecl_hex2rgb( EU_Cookie_Law_Cacheable::get_option('backgroundcolor') );
 		return $backgroundcolors[0].','.$backgroundcolors[1].','.$backgroundcolors[2];
 		break;
 	}
 }
 
 function eu_cookie_control_shortcode( $atts ) {
-	if ( !eucookie_option('enabled') ) { return; }
+	if ( ! EU_Cookie_Law_Cacheable::get_option('enabled') ) { return; }
 	if ( cookie_accepted() ) {
 		return '
 			<div class="pea_cook_control" style="color:'.ecl_frontstyle('fontcolor').'; background-color: rgba('.ecl_frontstyle('backgroundcolor').',0.9);">
-				'.eucookie_option('cc-cookieenabled').'<br>
-				<button id="eu_revoke_cookies" class="eu_control_btn">'.eucookie_option('cc-disablecookie').'</button>
+				'.EU_Cookie_Law_Cacheable::get_option('cc-cookieenabled').'<br>
+				<button id="eu_revoke_cookies" class="eu_control_btn">'.EU_Cookie_Law_Cacheable::get_option('cc-disablecookie').'</button>
 			</div>';
 	} else {
 		return '
 			<div class="pea_cook_control" style="color:'.ecl_frontstyle('fontcolor').'; background-color: rgba('.ecl_frontstyle('backgroundcolor').',0.9);">
-				'.str_replace( '%s', eucookie_option('barbutton'), eucookie_option('cc-cookiedisabled') ).'
+				'.str_replace( '%s', EU_Cookie_Law_Cacheable::get_option('barbutton'), EU_Cookie_Law_Cacheable::get_option('cc-cookiedisabled') ).'
 			</div>';            
 	}
 }

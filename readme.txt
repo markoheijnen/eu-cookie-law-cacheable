@@ -2,8 +2,8 @@
 Contributors: alexmoss, Milmor, pleer, ShaneJones
 Version:	2.9.1
 Stable tag:	trunk
-Author:		Alex Moss, Marco Milesi, Peadig, Shane Jones
-Author URI:   https://profiles.wordpress.org/milmor/
+Author:		Marko Heijnen, Alex Moss, Marco Milesi, Peadig, Shane Jones
+Author URI:   https://github.com/markoheijnen/eu-cookie-law-cacheable
 Tags: eu cookie, cookies, law, analytics, european, italia, garante, privacy, eu cookie law, italy, cookie, consent, europe
 Requires at least: 3.8
 Tested up to: 4.5
@@ -121,18 +121,6 @@ To exclude a page from the filter set a custom post field **eucookielaw_exclude*
 If you want to exclude a <script>, you can type between <script> and </script> the string **eucookielaw_exclude**.
 Ex. add **class="eucookielaw_exclude"** or a comment.
 
-= Cache =
-We are working to improve cache compatibility. As for now, conflicts may occur.
-
-**WP Super Cache** (sperimental*): open the file wp-content/advanced-cache.php and add the following immediately after <?php opening:
-`if ( !isset( $_COOKIE['euCookie'] ) ){ return; }`
-
-So that you have:
-`<?php
-if ( !isset( $_COOKIE['euCookie'] ) ){ return; }
-
-function wpcache_broken_message() {`
-
 = WPML =
 This plugin is officially certified for WPML. You can translate every string with WPML's String Translation module.
 
@@ -155,6 +143,10 @@ Click on the translations link to open the translation editor and adjust the str
 9. Fully customizable
 
 == Changelog ==
+
+= 3.0.0 =
+* Complete rewrite of code base
+* Enables support for caching since everything happens on JavaScript side
 
 = 2.9.1 31.01.2016 =
 * Added custom filter to exclude Jetpack InfiniteScroll

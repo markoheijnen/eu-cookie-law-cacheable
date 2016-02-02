@@ -1,18 +1,18 @@
 <?php
 /*
-Plugin Name:  EU Cookie Law
-Plugin URI:   https://wordpress.org/plugins/eu-cookie-law/
+Plugin Name:  EU Cookie Law Cachable
+Plugin URI:   https://github.com/markoheijnen/eu-cookie-law-cacheable
 Description:  EU Cookie Law informs users that your site uses cookies, with option to lock scripts before consent. Light + Customizable style.
-Version:      2.9.1
-Author:       Alex Moss, Marco Milesi, Peadig, Shane Jones
-Author URI:   https://wordpress.org/plugins/eu-cookie-law/
-Contributors: alexmoss, Milmor, peer, ShaneJones
-Text Domain:  eu-cookie-law
+Version:      3.0.0
+Author:       Marko Heijnen, Alex Moss, Marco Milesi, Peadig, Shane Jones
+Author URI:   https://github.com/markoheijnen/eu-cookie-law-cacheable
+Contributors: markoheijnen, alexmoss, Milmor, peer, ShaneJones
+Text Domain:  eu-cookie-law-cacheable
 */
 
 function eucookie_start() {
     
-    load_plugin_textdomain( 'eu-cookie-law' );
+    load_plugin_textdomain( 'eu-cookie-law-cacheable' );
     
     if ( is_admin() ) {
         require 'class-admin.php';
@@ -34,7 +34,7 @@ function ecl_action_admin_init() {
     if ( eucookie_option('tinymcebutton') ) {
         require 'inc/tinymce.php';
     }
-    $eda = __('EU Cookie Law informs users that your site uses cookies, with option to lock scripts before consent. Light + Customizable style.', 'eu-cookie-law');
+    $eda = __('EU Cookie Law informs users that your site uses cookies, with option to lock scripts before consent. Light + Customizable style.', 'eu-cookie-law-cacheable');
 } add_action('admin_init', 'ecl_action_admin_init');
 
 function ecl_check_defaults() { require 'defaults.php'; }

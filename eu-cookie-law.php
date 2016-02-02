@@ -20,11 +20,11 @@ class EU_Cookie_Law_Cacheable {
 
 
 	public function get_options() {
-		return get_option('peadig_eucookie');
+		return get_option('eucookie');
 	}
 
 	public static function get_option( $name, $default = false ) {
-		$options = get_option('peadig_eucookie');
+		$options = get_option('eucookie');
 
 		if ( isset( $options[$name] ) ) {
 			return $options[$name];
@@ -63,10 +63,10 @@ class EU_Cookie_Law_Cacheable {
 	}
 
 	public function set_new_options() {
-		$my_options = get_option( 'peadig_eucookie' );
+		$my_options = get_option( 'eucookie' );
 		$my_options = $this->sanitize_options( $my_options );
 
-		update_option( 'peadig_eucookie', $my_options );
+		update_option( 'eucookie', $my_options );
 	}
 
 	public static function sanitize_options( $options ) {

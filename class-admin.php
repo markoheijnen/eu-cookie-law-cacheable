@@ -40,11 +40,7 @@ class EU_Cookie_Law_Cacheable_Admin {
 				<form method="post" action="options.php">
 					<?php settings_fields('eucookie_options'); ?>
 					<?php
-						$options = get_option('eucookie');
-
-						if ( ! isset( $options['boxlinkid'] ) ) {
-							$options['boxlinkid'] = '';
-						}
+						$options = EU_Cookie_Law_Cacheable::get_options();
 					?>
 					<table class="form-table">
 						<tr valign="top"><th scope="row"><label for="enabled"><?php _e('Activate'); ?></label></th>

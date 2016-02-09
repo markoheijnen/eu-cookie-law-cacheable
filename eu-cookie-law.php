@@ -19,8 +19,14 @@ class EU_Cookie_Law_Cacheable {
 	}
 
 
-	public function get_options() {
-		return get_option('eucookie');
+	public static function get_options() {
+		$options = get_option('eucookie');
+
+		if ( ! $options ) {
+			$options = self::default_options();
+		}
+
+		return $options;
 	}
 
 	public static function get_option( $name, $default = false ) {
@@ -70,42 +76,45 @@ class EU_Cookie_Law_Cacheable {
 	}
 
 	public static function sanitize_options( $options ) {
-		$defaults = array(
-			array( 'enabled', '0' ),
-			array( 'lengthnum', '' ),
-			array( 'length', 'months '),
-			array( 'position', 'bottomright' ),
-			array( 'barmessage', __('By continuing to use the site, you agree to the use of cookies.', 'eu-cookie-law-cacheable') ),
-			array( 'barlink', __('more information', 'eu-cookie-law-cacheable') ),
-			array( 'barbutton', __('Accept', 'eu-cookie-law-cacheable') ),
-			array( 'closelink', __('Close', 'eu-cookie-law-cacheable') ),
-			array( 'boxcontent', __('The cookie settings on this website are set to "allow cookies" to give you the best browsing experience possible. If you continue to use this website without changing your cookie settings or you click "Accept" below then you are consenting to this.', 'eu-cookie-law-cacheable') ),
-			array( 'bhtmlcontent', __('<b>Content not available.</b><br><small>Please allow cookies by clicking Accept on the banner</small>', 'eu-cookie-law-cacheable') ),
-			array( 'backgroundcolor', '#000000' ),
-			array( 'fontcolor', '#FFFFFF' ),
-			array( 'autoblock', '0' ),
-			array( 'boxlinkblank', '0' ),
-			array( 'tinymcebutton', '0' ),
-			array( 'scrollconsent', '0' ),
-			array( 'navigationconsent', '0' ),
-			array( 'networkshare', '0' ),
-			array( 'onlyeuropean', '0' ),
-			array( 'customurl', get_site_url() ),
-			array( 'cc-disablecookie', __('Revoke cookie consent', 'eu-cookie-law-cacheable') ),
-			array( 'cc-cookieenabled', __('Cookies are enabled', 'eu-cookie-law-cacheable') ),
-			array( 'cc-cookiedisabled', __('Cookies are disabled<br>Accept Cookies by clicking "%s" in the banner.', 'eu-cookie-law-cacheable') ),
-			array( 'networkshareurl', self::get_shareurl() )
-		);
+		$defaults = self::default_options();
 
-		$count = count( $defaults );
-
-		for ( $i = 0; $i < $count; $i++ ) {
-			if ( ! isset( $options[ $defaults[$i][0] ] ) ) {
-				$options[ $defaults[$i][0] ] = $defaults[$i][1];
+		foreach ( $defaults as $key => $default_value ) {
+			if ( ! isset( $options[ $key ] ) ) {
+				$options[ $key ] = $default_value;
 			}
 		}
 
 		return $options;
+	}
+
+	public static function default_options() {
+		return array(
+			'enabled' => '0',
+			'lengthnum' => '',
+			'length' => 'months',
+			'position' => 'bottomright',
+			'barmessage' => __('By continuing to use the site, you agree to the use of cookies.', 'eu-cookie-law-cacheable'),
+			'barlink' => __('more information', 'eu-cookie-law-cacheable'),
+			'barbutton' => __('Accept', 'eu-cookie-law-cacheable'),
+			'closelink' => __('Close', 'eu-cookie-law-cacheable'),
+			'boxcontent' => __('The cookie settings on this website are set to "allow cookies" to give you the best browsing experience possible. If you continue to use this website without changing your cookie settings or you click "Accept" below then you are consenting to this.', 'eu-cookie-law-cacheable'),
+			'bhtmlcontent' => __('<b>Content not available.</b><br><small>Please allow cookies by clicking Accept on the banner</small>', 'eu-cookie-law-cacheable'),
+			'backgroundcolor' => '#000000',
+			'fontcolor' => '#FFFFFF',
+			'autoblock' => '0',
+			'boxlinkblank' => '0',
+			'tinymcebutton' => '0',
+			'scrollconsent' => '0',
+			'navigationconsent' => '0',
+			'networkshare' => '0',
+			'onlyeuropean' => '0',
+			'customurl' => get_site_url(),
+			'cc-disablecookie' => __('Revoke cookie consent', 'eu-cookie-law-cacheable'),
+			'cc-cookieenabled' => __('Cookies are enabled', 'eu-cookie-law-cacheable'),
+			'cc-cookiedisabled' => __('Cookies are disabled<br>Accept Cookies by clicking "%s" in the banner.', 'eu-cookie-law-cacheable'),
+			'networkshareurl' => self::get_shareurl(),
+			'boxlinkid' => ''
+		);
 	}
 
 	private static function get_shareurl() {

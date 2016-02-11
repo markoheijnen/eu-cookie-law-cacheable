@@ -35,11 +35,20 @@ jQuery(document).ready(function($){
 
 	$(window).scroll(function(){
 		if ( scrollConsent > 0 && !isCookiePage && !euCookieSet && document.cookie.indexOf("euCookie") < 0  ) {
-			if ( parseInt( $(window).scrollTop() ) > parseInt( $(window).height() ) ) {
+			var current_scroll = parseInt( $(window).scrollTop() );
+			var window_height = parseInt( $(window).height() );
+
+			// Full page scroll
+			if( current_scroll > window_height ) {
 				euCookieSet = 1;
 				euCookieConsent();
 			}
-		}	
+			// Bottom
+			if( current_scroll + window_height == $(document).height() ) {
+				euCookieSet = 1;
+				euCookieConsent();
+			}
+		}
 	});
 
 	function euCookieConsent(speed) {

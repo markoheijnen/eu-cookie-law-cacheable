@@ -23,21 +23,20 @@ jQuery(document).ready(function($){
 			$(".pea_cook_wrapper").fadeOut("fast");
 		}
 	});
-	
+
 	$("#pea_close").click(function() {
 		$(".pea_cook_wrapper").fadeIn("fast");
 		$(".pea_cook_more_info_popover").fadeOut("slow");
 	});
-	
+
 	$('#pea_cook_btn, .eucookie').on('click', function () {
 		euCookieConsent('fast');
 	});
-	
-	jQuery(window).scroll(function(){
-		if ( scrollConsent > 0 && document.cookie.indexOf("euCookie") < 0 && !euCookieSet ) {
-			euCookieSet = 1;
 
-			if (!isCookiePage) {
+	$(window).scroll(function(){
+		if ( scrollConsent > 0 && !isCookiePage && !euCookieSet && document.cookie.indexOf("euCookie") < 0  ) {
+			if ( parseInt( $(window).scrollTop() ) > parseInt( $(window).height() ) ) {
+				euCookieSet = 1;
 				euCookieConsent();
 			}
 		}	
@@ -48,10 +47,10 @@ jQuery(document).ready(function($){
 		$(".pea_cook_wrapper").fadeOut(speed);
 		showembeds();
 	}
-	
+
 	function createCookie() {
 		var today = new Date(), expire = new Date();
-		
+
 		if (expireTimer > 0) {
 			expire.setTime(today.getTime() + (expireTimer * 24 * 60 * 60 * 1000) );
 			cookiestring = "euCookie=set; "+networkShareURL+"expires=" + expire.toUTCString() + "; path=/";

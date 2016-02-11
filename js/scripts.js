@@ -35,6 +35,8 @@ jQuery(document).ready(function($){
 	
 	jQuery(window).scroll(function(){
 		if ( scrollConsent > 0 && document.cookie.indexOf("euCookie") < 0 && !euCookieSet ) {
+			euCookieSet = 1;
+
 			if (!isCookiePage) {
 				euCookieConsent();
 			}

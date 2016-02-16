@@ -32,7 +32,7 @@ class EU_Cookie_Law_Cacheable_Frontend {
 		);
 
 		wp_localize_script( 'eucookielaw-scripts', 'eucookielaw_data', $eclData );
-		
+
 	}
 
 	public function cookie_bar() {
@@ -103,18 +103,28 @@ class EU_Cookie_Law_Cacheable_Frontend {
 }
 
 class EU_Cookie_Law_Cacheable_Frontend_Block {
+	private $ob_enabled = true;
 
 	public function __construct() {
 		add_shortcode( 'cookie', array( $this, 'eu_cookie_shortcode' ) );
 		add_filter( 'widget_text', 'do_shortcode' );
 
-
 		//Compatibility for Jetpack InfiniteScroll
 		add_filter( 'infinite_scroll_js_settings', array( $this, 'infinite_scroll_js_settings' ) );
 
-		add_action( 'wp_head', array( $this, 'buffer_start' ) ); 
-		add_action( 'wp_footer', array( $this, 'buffer_end' ) ); 
+		add_filter( 'the_content', array( $this, 'filter_the_content' ) ); // In case ob_start goes weird for plugins.
+
+		if ( $this->ob_enabled ) {
+			add_action( 'wp_head', array( $this, 'buffer_start' ), 1000 );
+			add_action( 'wp_footer', array( $this, 'buffer_end' ), 1 );
+		}
 	}
+
+
+	public function filter_the_content( $content ) {
+		return $this->erase( $content );
+	}
+
 
 	public function eu_cookie_shortcode( $atts, $content = null ) {
 		extract(shortcode_atts(
@@ -142,7 +152,7 @@ class EU_Cookie_Law_Cacheable_Frontend_Block {
 	}
 
 	public function generate_cookie_notice_text( $height, $width, $text ) {
-		return '<span class="eucookie" style="color:' . ecl_frontstyle('fontcolor').'; background: rgba(' . ecl_frontstyle('backgroundcolor').',0.85) url(\'' . plugins_url('img/block.png', __FILE__).'\') no-repeat; background-position: -30px -20px; width:' . $width . ';height:' . $height . ';"><span>' . $text . '</span></span><span class="clear"></span>';    
+		return '<span class="eucookie" style="color:' . ecl_frontstyle('fontcolor').'; background: rgba(' . ecl_frontstyle('backgroundcolor').',0.85) url(\'' . plugins_url('img/block.png', __FILE__).'\') no-repeat; background-position: -30px -20px; width:' . $width . ';height:' . $height . ';"><span>' . $text . '</span></span><span class="clear"></span>';
 	}
 
 
@@ -174,8 +184,17 @@ class EU_Cookie_Law_Cacheable_Frontend_Block {
 	}
 
 	public function erase($content) {
+		$filter = current_filter();
+
 		if ( EU_Cookie_Law_Cacheable::get_option('autoblock') && ! ( get_post_field( 'eucookielaw_exclude', get_the_id() ) ) ) {
-			$content = preg_replace_callback( '#<iframe.*?\/iframe>|<object.*?\/object>|<embed.*?>#is', function( $matches ) {
+			$content = preg_replace_callback( '#<iframe.*?\/iframe>|<object.*?\/object>|<embed.*?>#is', function( $matches ) use ($filter) {
+				if ( $this->ob_enabled && 'the_content' != $filter ) {
+					// Only run over this during the ob_start callback
+					if ( strpos( $matches[0], 'data-src="') !== false ) {
+						return $matches[0];
+					}
+ 				}
+
 				$matches[0] = str_replace( 'src="', 'data-src="', $matches[0] );
 
 				$new_html  = '<span class="eu-cookie-law-embed">';
